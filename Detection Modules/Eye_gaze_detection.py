@@ -6,7 +6,7 @@ from math import hypot
 cap = cv2.VideoCapture(0)
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("E:\\Project\\Detection Modules\\shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
 
 font = cv2.FONT_HERSHEY_TRIPLEX
 
