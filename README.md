@@ -1,2 +1,2 @@
 # Elocutor
-Assistant for physically abled
+Assistant for specially abled

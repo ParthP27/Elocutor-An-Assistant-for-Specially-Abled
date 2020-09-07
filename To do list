@@ -21,7 +21,7 @@ Project Description
 - Assistant (General Queries)
 - Music
 - Video Player
-
+- Word Prediction
 
 
 _________________________________
@@ -33,3 +33,10 @@ Modules :
 4. Key-board (BASE)
 5. Home Page GUI (Detection Selection)
 6. Main Menu
+__________________________________________
+What to use for specific purpose
+
+1. Voice assistant & Text to Speech - Google API or Marvin's Jarvis
+2. Word Autocomplete - ElasticSearch Brown corpus - Kaushal
+3. Next word prediction - LSTM TF & KERAS - Parth
+4. Keyboard - OpenCV - Marvin
