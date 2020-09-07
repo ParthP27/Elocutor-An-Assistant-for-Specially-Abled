@@ -16,7 +16,7 @@ cap = cv2.VideoCapture(0)
 #board[:] = 255
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
 
 # Keyboard settings
 keyboard = np.zeros((600, 800, 3), np.uint8)
