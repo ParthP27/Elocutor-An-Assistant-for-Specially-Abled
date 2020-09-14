@@ -132,7 +132,7 @@ while True:
         # print(hor_line_length)
         ratio = ver_line_length / hor_line_length
         # print(ratio)
-        if ratio < 1.18:
+        if ratio < 1.10:
             cv2.putText(frame,"Selected",(5,100), font, 2, (0, 0, 0))
             # text += keys_set[letter_index]
             blinking_frames += 1
