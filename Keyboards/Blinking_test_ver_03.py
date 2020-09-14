@@ -270,7 +270,7 @@ while True:
              if frames == frames_active_letter:
                 line_selected+=1
                 frames = 0
-                if(line_selected==8):
+                if(line_selected==6):
                     select_keyboard_menu=True
                     line_selected=0
                     
