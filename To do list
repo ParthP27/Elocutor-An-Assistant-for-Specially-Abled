@@ -40,3 +40,12 @@ What to use for specific purpose
 2. Word Autocomplete - ElasticSearch Brown corpus - Kaushal
 3. Next word prediction - LSTM TF & KERAS - Parth
 4. Keyboard - OpenCV - Marvin
+
+
+
+Date : 25th Sept. 2020 (Friday)
+___________________________________________________________________
+=> Final look of the Application. (Possible Layouts)
+=> Size adaptibility of any app to a window.
+=> Window of video capture in another window.
+=> Possible prototype testing.
