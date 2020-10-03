@@ -7,17 +7,45 @@ from math import hypot
 import time
 #import time
 import pyautogui as pg
+import tkinter as tk
+
+
+
+
 cap = cv2.VideoCapture(0)
 #board = np.zeros((100, 600), np.uint8)
 #board[:] = 255
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 font = cv2.FONT_HERSHEY_COMPLEX
 font1 = cv2.FONT_HERSHEY_PLAIN
 
+#Getting the screen resolution
+
+root = tk.Tk()
+
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.destroy()
+#print(screen_width,screen_height)
+
+#Setting Keyboard size
+resolutions=[[1920,1080],[1440,900],[1366,768]]
+index_res=0
+for i in resolutions:
+    if(i[0]==screen_width and i[1]==screen_height):
+        index_res=resolutions.index(i)
+# thickness
+#if(index_res==0):
+    
+width = 75-(10*index_res)
+height = 50-(10*index_res)
+th = int(3-(0.5*index_res))
+gap=50-(10*index_res)
+
 # Keyboard settings
-keyboard = np.zeros((550, 1250, 3), np.uint8)
+keyboard = np.zeros((height*6+gap*2, width*16+gap, 3), np.uint8)
 """keys_set = {0:'esc',1:'f1',2:'f2',3:'f3',4:'f4',5:'f5',6:'f6',7:" ",8: " ",9:'f7',10:'f8',11:'f9',12:'f10',13:'f11',14:'f12',15:'del',16: " ",17: " ",
               18:'0', 19:'1', 20:'2',21: '3',22: '4',23: '5',24: '6',25: " ",26:'7', 27:'8', 28:'9',29: '0',30: '-',31: '=',32: 'backspace',33: " ",
               34: "tab", 35: "q", 36: "w", 37: "e", 38: "r",39: "t",40: " ",41: " ",42: "y", 43: "u", 44: "i", 45: "o", 46: "p",47: "[",48: "]",49:"|",
@@ -45,31 +73,39 @@ keys_set_2 = {0:'f7',1:'f8',2:'f9',3:'f10',4:'f11',5:'f12',6:'del',7: " ",8: " "
               
 
 def draw_letters(letter_index, text, letter_light,keyset,selection):
-    # thickness
-    width = 75
-    height = 75
-    th = 3
+  
     if selection==2:
     # Keys
         if keyset==keys_set_1:
-            x=(letter_index%8)*75
-            y=100+(letter_index//8)*75
+            x=(letter_index%8)*width
+            y=gap*2+(letter_index//8)*height
         else:
-            x=625+(letter_index%8)*75
-            y=100+(letter_index//8)*75
+            x=width*8+gap+(letter_index%8)*width
+            y=gap*2+(letter_index//8)*height
 
-       
+        #text scaling
+        if("ctrl" in text or "caps" in text):
+            text=text[:4]
+        elif("alt" in text or "win" in text):
+            text=text[:3]
+        elif("shift" in text):
+            text=text[:5]
+        elif("back" in text):
+            text="<-"
+            
 
         # Text settings
         if(len(text)>1 and len(text)<4):
+            font_scale = 0.8-(0.1*index_res)
+            font_th = 1
+            
+        elif(len(text)>3):
+            font_scale = 0.6-(0.1*index_res)
+            font_th = 1
+          
+        else:
             font_scale = 1
             font_th = 1
-        elif(len(text)>3):
-            font_scale = 0.5
-            font_th = 1
-        else:
-            font_scale = 2
-            font_th = 2
         font_letter = cv2.FONT_HERSHEY_COMPLEX
 
         text_size = cv2.getTextSize(text, font_letter, font_scale, font_th)[0]
@@ -89,47 +125,14 @@ def draw_letters(letter_index, text, letter_light,keyset,selection):
         if text=="L":
             x=10
         else:
-            x=1150
+            x=width*16-gap
         if letter_light is True:
             cv2.rectangle(keyboard, (x + th, y + th), (x + width - th, y + height - th), (255, 255, 255), -1)
         else:
             cv2.rectangle(keyboard, (x + th, y + th), (x + width - th, y + height - th), (51, 51, 51), -1)
         
 
-def midpoint(p1 ,p2):
-    return int((p1.x + p2.x)/2), int((p1.y + p2.y)/2)
 
-font = cv2.FONT_HERSHEY_PLAIN
-
-def get_blinking_ratio(eye_points, facial_landmarks):
-    left_point = (facial_landmarks.part(eye_points[0]).x, facial_landmarks.part(eye_points[0]).y)
-    right_point = (facial_landmarks.part(eye_points[3]).x, facial_landmarks.part(eye_points[3]).y)
-    center_top = midpoint(facial_landmarks.part(eye_points[1]), facial_landmarks.part(eye_points[2]))
-    center_bottom = midpoint(facial_landmarks.part(eye_points[5]), facial_landmarks.part(eye_points[4]))
-
-    #hor_line = cv2.line(frame, left_point, right_point, (0, 255, 0), 2)
-    #ver_line = cv2.line(frame, center_top, center_bottom, (0, 255, 0), 2)
-
-    hor_line_lenght = hypot((left_point[0] - right_point[0]), (left_point[1] - right_point[1]))
-    ver_line_lenght = hypot((center_top[0] - center_bottom[0]), (center_top[1] - center_bottom[1]))
-
-    ratio = hor_line_lenght / ver_line_lenght
-    return ratio
-
-def eyes_contour_points(facial_landmarks):
-    left_eye = []
-    right_eye = []
-    for n in range(36, 42):
-        x = facial_landmarks.part(n).x
-        y = facial_landmarks.part(n).y
-        left_eye.append([x, y])
-    for n in range(42, 48):
-        x = facial_landmarks.part(n).x
-        y = facial_landmarks.part(n).y
-        right_eye.append([x, y])
-    left_eye = np.array(left_eye, np.int32)
-    right_eye = np.array(right_eye, np.int32)
-    return left_eye, right_eye
           
 # Counters
 frames = 0
@@ -192,22 +195,32 @@ while True:
     faces = detector(gray)
     for face in faces:
         
-        landmarks = predictor(gray, face)
-
-        left_eye, right_eye = eyes_contour_points(landmarks)
-
-            # Detect blinking
-        left_eye_ratio = get_blinking_ratio([36, 37, 38, 39, 40, 41], landmarks)
-        right_eye_ratio = get_blinking_ratio([42, 43, 44, 45, 46, 47], landmarks)
-        blinking_ratio = (left_eye_ratio + right_eye_ratio) / 2
-
-            # Eyes color
-        cv2.polylines(frame, [left_eye], True, (0, 0, 255), 2)
-        cv2.polylines(frame, [right_eye], True, (0, 0, 255), 2)        # print(ratio)
+        x, y = face.left(), face.top()
+        x1, y1 = face.right(), face.bottom()
+        cv2.rectangle(frame, (x,y), (x1,y1), (0,255,255), 3)
+        
+        landmarks = predictor(gray,face)
+        
+        nose_point = (landmarks.part(33).x, landmarks.part(33).y)
+        chin_point = (landmarks.part(8).x, landmarks.part(8).y)
+        
+        ver_line = cv2.line(frame, nose_point, chin_point, (255,0,0), 2)
+        
+        lip_point_left = (landmarks.part(48).x, landmarks.part(48).y)
+        lip_point_right = (landmarks.part(54).x, landmarks.part(54).y)
+        
+        hor_line = cv2.line(frame, lip_point_left, lip_point_right, (255,0,0), 2)
+        
+        ver_line_length = hypot((nose_point[0] - chin_point[0]), (nose_point[1] - chin_point[1]))
+        hor_line_length = hypot((lip_point_left[0] - lip_point_right[0]), (lip_point_left[1] - lip_point_right[1]))
+        
+        # print(hor_line_length)
+        ratio = ver_line_length / hor_line_length
+        # print(ratio)
         #print(ratio)
         if select_keyboard_menu is True:
             
-            if blinking_ratio > 5:
+            if ratio < 1.10:
                 cv2.putText(frame,"Selected",(5,100), font, 2, (0, 0, 0))
                 # text += keys_set[letter_index]
                 keyboard_selection_frames += 1
@@ -229,7 +242,7 @@ while True:
                     #blinking_frames = 0
             
         
-        elif(blinking_ratio > 5 and select_line_menu is True):
+        elif(ratio < 1.10 and select_line_menu is True):
             #flag_for_change=0
             cv2.putText(frame,"Selected",(5,100), font, 2, (0, 0, 0))
             # text += keys_set[letter_index]
@@ -240,13 +253,15 @@ while True:
                 blinking_frames = 0
                 select_line_menu = False
         else:
-            if blinking_ratio > 5:
+            if ratio < 1.10:
                 cheek_move_counter+=1
                 if cheek_move_counter == frames_to_blink:
                     pg.press(active_letter)
                     cheek_move_counter = 0
                     select_keyboard_menu = True
-            
+                    line_selected=0
+                    letter_index=0
+                    
       # for keyboard
         if select_keyboard_menu is True:
             
