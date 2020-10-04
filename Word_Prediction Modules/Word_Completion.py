@@ -7,7 +7,6 @@ Created on Sat Sep  5 22:45:55 2020
 
 import Trie_Structure as trie
 
-
 t = trie.get_root()
 
 while True:
