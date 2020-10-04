@@ -7,6 +7,11 @@ from math import hypot
 import time
 #import time
 import pyautogui as pg
+import tkinter as tk
+
+
+
+
 cap = cv2.VideoCapture(0)
 #board = np.zeros((100, 600), np.uint8)
 #board[:] = 255
@@ -16,14 +21,40 @@ predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_land
 font = cv2.FONT_HERSHEY_COMPLEX
 font1 = cv2.FONT_HERSHEY_PLAIN
 
+
+
+#Getting the screen resolution
+
+root = tk.Tk()
+
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.destroy()
+#print(screen_width,screen_height)
+
+#Setting Keyboard size
+resolutions=[[1920,1080],[1440,900],[1366,768]]
+index_res=0
+for i in resolutions:
+    if(i[0]==screen_width and i[1]==screen_height):
+        index_res=resolutions.index(i)
+# thickness
+#if(index_res==0):
+    
+width = 75-(10*index_res)
+height = 50-(10*index_res)
+th = int(3-(0.5*index_res))
+gap=50-(10*index_res)
 # Keyboard settings
-keyboard = np.zeros((550, 1250, 3), np.uint8)
+keyboard = np.zeros((height*6+gap*2, width*16+gap, 3), np.uint8)
 """keys_set = {0:'esc',1:'f1',2:'f2',3:'f3',4:'f4',5:'f5',6:'f6',7:" ",8: " ",9:'f7',10:'f8',11:'f9',12:'f10',13:'f11',14:'f12',15:'del',16: " ",17: " ",
               18:'0', 19:'1', 20:'2',21: '3',22: '4',23: '5',24: '6',25: " ",26:'7', 27:'8', 28:'9',29: '0',30: '-',31: '=',32: 'backspace',33: " ",
               34: "tab", 35: "q", 36: "w", 37: "e", 38: "r",39: "t",40: " ",41: " ",42: "y", 43: "u", 44: "i", 45: "o", 46: "p",47: "[",48: "]",49:"|",
               50: "capslock", 51: "a", 52: "s", 53: "d",54: "f",55: "g",56: " ",57: " ",58: "h", 59: "j", 60: "k",61: "l",62: ";",63: "'",64: "enter",65: " ",
               66: "shiftleft",67: "z",68: "x",69: "c",70: "v",71: " ",72: " ",73: " ",74: "b",75: "n",76: "m",77: ",",78: ".",79: "/",80: "shiftright",81: " ",
               82: "ctrlleft",83: "fn",84: "winleft",85: "altleft",86: "space",87:"altright",88: "ctrlright",89:"up",90:"down",91:"left",92:"right"}"""
+
+
 keys_set_1 = {0:' ',1:'f1',2:'f2',3:'f3',4:'f4',5:'f5',6:'f6',7:" ",8: " ",
               9:'0', 10:'1', 11:'2',12: '3',13: '4',14: '5',15: '6',16: " ",
               17: "tab", 18: "q", 19: "w", 20: "e", 21: "r",22: "t",23: " ",24: " ",
@@ -45,31 +76,39 @@ keys_set_2 = {0:'f7',1:'f8',2:'f9',3:'f10',4:'f11',5:'f12',6:'del',7: " ",8: " "
               
 
 def draw_letters(letter_index, text, letter_light,keyset,selection):
-    # thickness
-    width = 75
-    height = 75
-    th = 3
+  
     if selection==2:
     # Keys
         if keyset==keys_set_1:
-            x=(letter_index%8)*75
-            y=100+(letter_index//8)*75
+            x=(letter_index%8)*width
+            y=gap*2+(letter_index//8)*height
         else:
-            x=625+(letter_index%8)*75
-            y=100+(letter_index//8)*75
+            x=width*8+gap+(letter_index%8)*width
+            y=gap*2+(letter_index//8)*height
 
-       
+        #text scaling
+        if("ctrl" in text or "caps" in text):
+            text=text[:4]
+        elif("alt" in text or "win" in text):
+            text=text[:3]
+        elif("shift" in text):
+            text=text[:5]
+        elif("back" in text):
+            text="<-"
+            
 
         # Text settings
         if(len(text)>1 and len(text)<4):
+            font_scale = 0.8-(0.1*index_res)
+            font_th = 1
+            
+        elif(len(text)>3):
+            font_scale = 0.6-(0.1*index_res)
+            font_th = 1
+          
+        else:
             font_scale = 1
             font_th = 1
-        elif(len(text)>3):
-            font_scale = 0.5
-            font_th = 1
-        else:
-            font_scale = 2
-            font_th = 2
         font_letter = cv2.FONT_HERSHEY_COMPLEX
 
         text_size = cv2.getTextSize(text, font_letter, font_scale, font_th)[0]
@@ -89,11 +128,14 @@ def draw_letters(letter_index, text, letter_light,keyset,selection):
         if text=="L":
             x=10
         else:
-            x=1150
+            x=width*16-gap
+        #print(x,y,width,height,th)  
         if letter_light is True:
             cv2.rectangle(keyboard, (x + th, y + th), (x + width - th, y + height - th), (255, 255, 255), -1)
         else:
             cv2.rectangle(keyboard, (x + th, y + th), (x + width - th, y + height - th), (51, 51, 51), -1)
+        
+
         
 
 def midpoint(p1 ,p2):
@@ -246,6 +288,8 @@ while True:
                     pg.press(active_letter)
                     cheek_move_counter = 0
                     select_keyboard_menu = True
+                    line_selected=0
+                    letter_index=0
             
       # for keyboard
         if select_keyboard_menu is True:
@@ -273,6 +317,7 @@ while True:
                 if(line_selected==6):
                     select_keyboard_menu=True
                     line_selected=0
+                    
                     
              if keys_set==keys_set_1:
                  lcount=-1
