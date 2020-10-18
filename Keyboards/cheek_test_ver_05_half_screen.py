@@ -17,7 +17,7 @@ cap = cv2.VideoCapture(0)
 #board[:] = 255
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
 font = cv2.FONT_HERSHEY_COMPLEX
 font1 = cv2.FONT_HERSHEY_PLAIN
 
@@ -31,19 +31,19 @@ root.destroy()
 #print(screen_width,screen_height)
 
 #Setting Keyboard size
-resolutions=[[1920,1080],[1440,900],[1366,768]]
-index_res=0
+resolutions = [[1920,1080],[1440,900],[1366,768]]
+index_res = 0
 for i in resolutions:
-    if(i[0]==screen_width and i[1]==screen_height):
-        index_res=resolutions.index(i)
-# thickness
-#if(index_res==0):
+    if i[0] == screen_width and i[1] == screen_height:
+        index_res = resolutions.index(i)
+
     
 #Magic Portion (Control Centre)
-gap=30-(5*index_res)    
+gap=30-(5*index_res)
 width = (resolutions[index_res][0]//2-gap)//16 #57-(24*index_res)
-height = (resolutions[index_res][1]//3-2*gap)//6 #55-(10*index_res)
+height = (resolutions[index_res][1]//3 - 2*gap)//6 #55-(10*index_res)
 th = int(3-(0.5*index_res))
+# print(height*6+gap*2)
 
 # Keyboard settings
 keyboard = np.zeros((height*6+gap*2, width*16+gap, 3), np.uint8)
@@ -170,25 +170,25 @@ while True:
     
        
     if select_keyboard_menu is True:
-            if side==0:
-                    draw_letters(1, "L", True,keys_set_1,0)
-                    draw_letters(1, "R", False,keys_set_1,1)
-            else:
-                    draw_letters(1, "L", False,keys_set_1,0)
-                    draw_letters(1, "R", True,keys_set_1,1)
-                
-            for i in range(48):
-                    draw_letters(i, keys_set_1[i], False,keys_set_1,2)
-            for i in range(48):
-                    draw_letters(i, keys_set_2[i], False,keys_set_2,2)
+        if side==0:
+                draw_letters(1, "L", True,keys_set_1,0)
+                draw_letters(1, "R", False,keys_set_1,1)
+        else:
+                draw_letters(1, "L", False,keys_set_1,0)
+                draw_letters(1, "R", True,keys_set_1,1)
+            
+        for i in range(48):
+                draw_letters(i, keys_set_1[i], False,keys_set_1,2)
+        for i in range(48):
+                draw_letters(i, keys_set_2[i], False,keys_set_2,2)
     
        
             
-     # Keyboard selected
+    # Keyboard selected
     if keyboard_selected == "left":
-            keys_set = keys_set_1
+        keys_set = keys_set_1
     else:
-            keys_set = keys_set_2
+        keys_set = keys_set_2
     active_letter = keys_set[last_selected_line*8+letter_index]
 
     
@@ -243,7 +243,7 @@ while True:
                     #blinking_frames = 0
             
         
-        elif(ratio < 1.10 and select_line_menu is True):
+        elif ratio < 1.10 and select_line_menu is True:
             #flag_for_change=0
             cv2.putText(frame,"Selected",(5,100), font, 2, (0, 0, 0))
             # text += keys_set[letter_index]
@@ -260,10 +260,10 @@ while True:
                     pg.press(active_letter)
                     cheek_move_counter = 0
                     select_keyboard_menu = True
-                    line_selected=0
-                    letter_index=0
+                    line_selected = 0
+                    letter_index = 0
                     
-      # for keyboard
+        # for keyboard
         if select_keyboard_menu is True:
             
             if frames == frames_active_letter:
@@ -281,7 +281,8 @@ while True:
                     draw_letters(i, keys_set_1[i], False,keys_set_1,2)
                 for i in range(48):
                     draw_letters(i, keys_set_2[i], False,keys_set_2,2)
-    # for line selection
+        
+        # for line selection
         if select_keyboard_menu is False and select_line_menu is True:
              if frames == frames_active_letter:
                 line_selected+=1
@@ -318,7 +319,7 @@ while True:
                  for i in range(48):
                     draw_letters(i, keys_set_1[i], False,keys_set_1,2)
             
-    # Display letters on the keyboard
+        # Display letters on the keyboard
         if select_keyboard_menu is False and select_line_menu is False:
             if(flag_for_change==1):
                 flag_for_change=0
@@ -335,37 +336,35 @@ while True:
                 letter_index = 0
                 
       
-            if(keys_set==keys_set_1):
+            if(keys_set==keys_set_1):                
+                lcount=8*last_selected_line            
                 
-                     lcount=8*last_selected_line
-                 
-                     
-                     for j in range(8):
-                        if j == letter_index:
-                            light = True
-                        else:
-                            light = False
-                        #print(lcount)
-                        draw_letters(lcount, keys_set_1[lcount], light,keys_set_1,2)
-                        lcount+=1
-                        
-                     for i in range(48):
-                        draw_letters(i, keys_set_2[i], False,keys_set_2,2)
-            else:
-               
-                     lcount=8*last_selected_line
-                 
-                     
-                     for j in range(8):
-                        if j == letter_index:
-                            light = True
-                        else:
-                            light = False
-                        
-                        draw_letters(lcount, keys_set_2[lcount], light,keys_set_2,2)
-                        lcount+=1
-                     for i in range(48):
-                        draw_letters(i, keys_set_1[i], False,keys_set_1,2)
+                for j in range(8):
+                   if j == letter_index:
+                       light = True
+                   else:
+                       light = False
+                   #print(lcount)
+                   draw_letters(lcount, keys_set_1[lcount], light,keys_set_1,2)
+                   lcount+=1
+                   
+                for i in range(48):
+                   draw_letters(i, keys_set_2[i], False,keys_set_2,2)
+            
+            else:               
+                lcount=8*last_selected_line
+            
+                
+                for j in range(8):
+                   if j == letter_index:
+                       light = True
+                   else:
+                       light = False
+                   
+                   draw_letters(lcount, keys_set_2[lcount], light,keys_set_2,2)
+                   lcount+=1
+                for i in range(48):
+                   draw_letters(i, keys_set_1[i], False,keys_set_1,2)
 
     if select_keyboard_menu is True: 
         percentage_blinking = keyboard_selection_frames / frames_to_blink

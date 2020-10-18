@@ -19,7 +19,7 @@ import pyautogui
 root = tk.Tk()
 root.title("Elocutor")
 root.config(bg='gray')
-root.attributes('-fullscreen', True)
+# root.attributes('-fullscreen', True)
 
 # Screen Sizes
 screen_width = root.winfo_screenwidth()
@@ -69,7 +69,7 @@ def rescale_frame(frame, percent=75):
     dim = (width, height)
     return cv2.resize(frame, dim, interpolation =cv2.INTER_AREA)
 
-Size=100 #Overall Sizes
+Size=50 #Overall Sizes
 Main_Options = np.zeros((len(images.keys())*Size, Size, 3), np.uint8)
 
 icons=[]

@@ -1,4 +1,4 @@
-<<<<<<< HEAD:Keyboards/cheek_test_ver_03.py
+
 def Cheek_Keyboard():
     import cv2
     import numpy as np
@@ -12,7 +12,7 @@ def Cheek_Keyboard():
     predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
     font = cv2.FONT_HERSHEY_COMPLEX
     font1 = cv2.FONT_HERSHEY_PLAIN
-=======
+
 
 
 import cv2
@@ -32,7 +32,7 @@ cap = cv2.VideoCapture(0)
 #board[:] = 255
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
 font = cv2.FONT_HERSHEY_COMPLEX
 font1 = cv2.FONT_HERSHEY_PLAIN
 
@@ -181,7 +181,6 @@ while True:
     frames += 1
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     frame[rows - 50: rows, 0: cols] = (255, 255, 255)
->>>>>>> 398014112e7358ee4b9c1b194cafe20a19fe68d0:Keyboards/cheek_test_ver_04.py
     
     # Keyboard settings
     keyboard = np.zeros((550, 1250, 3), np.uint8)
@@ -317,7 +316,6 @@ while True:
         if keyboard_selected == "left":
                 keys_set = keys_set_1
         else:
-<<<<<<< HEAD:Keyboards/cheek_test_ver_03.py
                 keys_set = keys_set_2
         active_letter = keys_set[last_selected_line*8+letter_index]
     
@@ -329,7 +327,6 @@ while True:
             x, y = face.left(), face.top()
             x1, y1 = face.right(), face.bottom()
             cv2.rectangle(frame, (x,y), (x1,y1), (0,255,255), 3)
-=======
             if ratio < 1.10:
                 cheek_move_counter+=1
                 if cheek_move_counter == frames_to_blink:
@@ -341,7 +338,6 @@ while True:
                     
       # for keyboard
         if select_keyboard_menu is True:
->>>>>>> 398014112e7358ee4b9c1b194cafe20a19fe68d0:Keyboards/cheek_test_ver_04.py
             
             landmarks = predictor(gray,face)
             

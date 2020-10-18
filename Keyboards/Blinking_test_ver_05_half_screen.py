@@ -17,7 +17,7 @@ cap = cv2.VideoCapture(0)
 #board[:] = 255
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat") #../Face_Landmarks/
+predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat") #../Face_Landmarks/
 font = cv2.FONT_HERSHEY_COMPLEX
 font1 = cv2.FONT_HERSHEY_PLAIN
 
@@ -80,7 +80,7 @@ keys_set_2 = {0:'f7',1:'f8',2:'f9',3:'f10',4:'f11',5:'f12',6:'del',7: " ",8: " "
               
               
 
-def draw_letters(letter_index, text, letter_light,keyset,selection):
+def draw_letters(letter_index, text, letter_light, keyset, selection):
   
     if selection==2:
     # Keys
@@ -214,11 +214,11 @@ while True:
        
     if select_keyboard_menu is True:
             if side==0:
-                    draw_letters(1, "L", True,keys_set_1,0)
-                    draw_letters(1, "R", False,keys_set_1,1)
+                    draw_letters(1, "L", True, keys_set_1, 0)
+                    draw_letters(1, "R", False, keys_set_1, 1)
             else:
-                    draw_letters(1, "L", False,keys_set_1,0)
-                    draw_letters(1, "R", True,keys_set_1,1)
+                    draw_letters(1, "L", False, keys_set_1, 0)
+                    draw_letters(1, "R", True, keys_set_1, 1)
                 
             for i in range(48):
                     draw_letters(i, keys_set_1[i], False,keys_set_1,2)
@@ -304,8 +304,8 @@ while True:
                 frames = 0
                 #print(side)
                 if side==0:
-                    draw_letters(1, "L", True,keys_set_1,0)
-                    draw_letters(1, "R", False,keys_set_1,1)
+                    draw_letters(1, "L", True, keys_set_1, 0)
+                    draw_letters(1, "R", False, keys_set_1, 1)
                 else:
                     draw_letters(1, "L", False,keys_set_1,0)
                     draw_letters(1, "R", True,keys_set_1,1)
@@ -380,7 +380,7 @@ while True:
                         else:
                             light = False
                         #print(lcount)
-                        draw_letters(lcount, keys_set_1[lcount], light,keys_set_1,2)
+                        draw_letters(lcount, keys_set_1[lcount], light, keys_set_1,2)
                         lcount+=1
                         
                      for i in range(48):
