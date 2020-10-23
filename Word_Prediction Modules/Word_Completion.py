@@ -20,13 +20,23 @@ Created on Sat Sep  5 22:45:55 2020
 #     elif comp == 0: 
 #     	print("No string found with this prefix\n")
 
-# from nltk.corpus import wordnet as wn
+from nltk.corpus import wordnet as wn
 
-# print(wn.synsets('dog'))
+print(wn.synsets('dog'))
 
 import autocomplete
 
 autocomplete.load()
+# x = 'y'
 
-a = autocomplete.predict("have","d", top_n=10)
-print(a)
+# a = autocomplete.predict_currword(x, 10)
+# b = autocomplete.predict('I', 'l', 10)
+# print(a)
+# print(b)
+
+# s = " "
+# print(len(s))
+# print(s.isspace())
+
+s = ('K', 'E', 'M', 'O')
+print(s[:2])

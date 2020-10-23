@@ -76,7 +76,7 @@ from PIL import Image, ImageTk
 root = Tk()
 
 root.title("Elocutor Home")
-root.iconbitmap("images/accessibility.png")
+root.iconbitmap(r"E:\Project\Elocutor\GUI Components Testing\images\icons8-siri-256.ico")
 root.geometry("600x400")
 uniform_color="#3b6dc7"
 
