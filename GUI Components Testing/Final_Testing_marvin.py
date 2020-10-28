@@ -23,7 +23,7 @@ autoc.load()
 #------------------------------------- Main Window ------------------------------------------------
 root = tk.Tk()
 root.title("Elocutor")
-root.iconbitmap(r"E:\Project\Elocutor\GUI Components Testing\images\icons8-siri-256.ico")
+#root.iconbitmap(r"E:\Project\Elocutor\GUI Components Testing\images\icons8-siri-256.ico")
 root.config(bg='gray')
 root.resizable(width=False, height=False)
 
@@ -39,13 +39,14 @@ root.geometry(f'{screen_width_updated}x{screen_height}+{screen_width_updated}+0'
 #--------------------------------------- Control Center ----------------------------------------
 # Dimensions for all frames and widgets
 
-frame_selector = 0
+frame_selector = 1
 '''
     0 : Option Frame (Apps, Keyboard, Words, etc.)
     1 : App Selection Frame
     2 : Keyboard Frame
     3 : Frequent Words
     4 : Extra Frame
+    5 : Extra Option Frame
 '''
 
 full_width = screen_width // 2
@@ -66,9 +67,14 @@ images = {0:'Notepad', 1:'Chrome', 2:'This PC', 3:'Calculator', 4:'Setting', 5:'
 icon_count = len(images.keys())
 
 # Frame Selector Frame (Options Wali Frame BABU BHAIYA)
-options = {0:'Applications', 1:'Keyboard', 2:'Words', 3:'Freq. Controls'}
+options = {0:'Applications', 1:'Keyboard', 2:'Words'}
 selected_option = 0
 
+#Extra Options Frame (Ayee Raju)
+extra_options={0:'Applications', 1:'Keyboard', 2:'Words'}
+selected_extra_option=0
+
+#A
 # Selection Criteria
 app_frames = 0
 key_frames = 0
@@ -119,17 +125,15 @@ last_selected_line = 0
 title_frame = tk.Frame(root, bg='dark blue', width = full_width, height = title_height)
 apps_frame = tk.Frame(root, bg='yellow', width = app_width, height = app_height)
 user_frame = tk.Frame(root, bg='orange', width = user_width, height = user_height)
-freq_title_frame = tk.Frame(root, bg = '#1a2d4f', width = user_width, height = (user_height//5))
-freq_option_frame = tk.Frame(root, bg='black', width = user_width, height = user_height)
-selection_frame = tk.Frame(root, bg='green', width = frame_selection_width, height = (user_height*4//5))
+extra_frame1 = tk.Frame(root, bg='black', width = user_width, height = user_height)
+selection_frame = tk.Frame(root, bg='green', width = frame_selection_width, height = user_height)
 words_frame = tk.Frame(root, bg='red', width = words_frame_width, height = user_height)
 keyboard_frame = tk.Frame(root, bg='black', width = full_width, height = keyboard_height)
 
 # ------------- Layout of all frames -----------
 title_frame.place(x = 0,y = 0)
 apps_frame.place(x = 0, y = title_height)
-freq_title_frame.place(x = app_width, y = title_height)
-freq_option_frame.place(x = app_width, y = title_height + (user_height//5))
+extra_frame1.place(x = app_width, y = title_height)
 user_frame.place(x = app_width + user_width, y = title_height)
 selection_frame.place(x = app_width, y = title_height+user_height)
 words_frame.place(x = app_width + frame_selection_width, y = title_height+user_height)
@@ -165,22 +169,18 @@ keyboard_label.pack()
 option_label = tk.Label(selection_frame)
 option_label.pack()
 
+extra_option_label = tk.Label(extra_frame1)
+extra_option_label.pack()
+
 words_label = tk.Label(words_frame)
 words_label.pack()
-
-freq_option_label = tk.Label(freq_option_frame)
-freq_option_label.pack()
-
-
-freq_title_label = tk.Label(freq_title_frame, text = "Frequent Options", background = "#1a2d4f",foreground = "white", font=("Helvetica", 12))
-freq_title_label.place(x = (user_width//4), y = 10)
-
 
 
 #---------------------------- Whole Code and Logic for app selection and User video stream--------------------------
 
 # Landmarks Detector
 detector = dlib.get_frontal_face_detector()
+# predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
 
 # User Video
@@ -220,10 +220,6 @@ def blank_words():
     for i in range(10):
         draw_words(i, False, True)
         
-def blank_freq_options():
-    for i in range(8):
-        draw_freq_options(i, False, True)
-    
 
 def put_words():
     global predicted_words
@@ -263,7 +259,7 @@ def draw_options(option_index, option_select):
     width = int(frame_selection_width) - 20
     height = int(user_height) // 3 - 30
     x = 10
-    y = Keyboard_gap + (option_index * (height + (10)))
+    y = Keyboard_gap + (option_index * (height + 30))
     
     th = 3 # thickness
 
@@ -284,45 +280,37 @@ def draw_options(option_index, option_select):
         cv2.rectangle(Option_Frame, (x + th, y + th), (x + width - th, y + height - th), (51, 51, 51), -1)
         cv2.putText(Option_Frame, text, (text_x, text_y), font_letter, font_scale, (255, 255, 255), font_th)
         
-
-
-
-#----------------------------- Frequently used options Frame--------------------------------------------
-Frequent_Options = np.zeros((int(user_height // 5) * 4, int(user_width // 2)*2, 3), np.uint8)
-def draw_freq_options(freq_index, freq_select, blank):
-    width = int(user_width // 2)
+#-----------------------------Extra Option Wali Frame--------------------------------------------
+Extra_Option_Frame = np.zeros((len(extra_options.keys())*int(user_height), int(frame_selection_width), 3), np.uint8)
+def draw_extra_options(option_index, option_select, blank):
+    width = int(frame_selection_width) - 20
     height = int(user_height // 5)
-    if freq_index % 2 == 0:
+    if option_index % 2 == 0:
         x = 0
     else:
         x = width
-    y = height * (freq_index // 2)
-    th = 3
-
+    y = height * (option_index // 2)
+    th = 3 # thickness
+    
     if blank:
-        cv2.rectangle(Frequent_Options, (x + th, y + th), (x + width - th, y + height - th), (51, 51, 51), -1)
-        
+        cv2.rectangle(words, (x + th, y + th), (x + width - th, y + height - th))
     else:
         # Text settings
-        if freq_index < len(predicted_words):
-            text = predicted_words[freq_index][0]
-        else:
-            text = ""
+        text = extra_options[option_index]
         font_letter = cv2.FONT_HERSHEY_COMPLEX
-        font_scale = 0.6
+        font_scale = 0.4
         font_th = 1
         text_size = cv2.getTextSize(text, font_letter, font_scale, font_th)[0]
         width_text, height_text = text_size[0], text_size[1]
         text_x = int((width - width_text) / 2) + x
         text_y = int((height + height_text) / 2) + y
         
-        if freq_select is True:
-            cv2.rectangle(Frequent_Options, (x + th, y + th), (x + width - th, y + height - th), (255, 255, 255), -1)
-            cv2.putText(Frequent_Options, text, (text_x, text_y), font_letter, font_scale, (51, 51, 51), font_th)
+        if option_select is True:
+            cv2.rectangle(Extra_Option_Frame, (x + th, y + th), (x + width - th, y + height - th), (255, 255, 255), -1)
+            cv2.putText(Extra_Option_Frame, text, (text_x, text_y), font_letter, font_scale, (51, 51, 51), font_th)
         else:
-            cv2.rectangle(Frequent_Options, (x + th, y + th), (x + width - th, y + height - th), (51, 51, 51), -1)
-            cv2.putText(Frequent_Options, text, (text_x, text_y), font_letter, font_scale, (255, 255, 255), font_th)
-
+            cv2.rectangle(Extra_Option_Frame, (x + th, y + th), (x + width - th, y + height - th), (51, 51, 51), -1)
+            cv2.putText(Extra_Option_Frame, text, (text_x, text_y), font_letter, font_scale, (255, 255, 255), font_th)
 
 #--------------------------------- Predicted Words Frame --------------------------
 words = np.zeros((int(user_height // 5) * 5, int(words_frame_width // 2)*2, 3), np.uint8)
@@ -554,7 +542,7 @@ def show_frame():
     global current_valid_word
     global new_word_added
     global word_count
-    global Frequent_Options
+    global selected_extra_option
     
     
     _, frame = cap.read()    
@@ -572,7 +560,6 @@ def show_frame():
     if frame_selector == 0:
         blank_Apps()
         blank_Keyboard()
-        blank_freq_options()
         if current_valid_word != "":
             put_words()
         else:
@@ -592,7 +579,6 @@ def show_frame():
     elif frame_selector == 1: # APP Selection Frame is selected.
         blank_Keyboard()
         blank_Options()
-        blank_freq_options()
         if current_valid_word != "":
             put_words()
         else:
@@ -747,25 +733,38 @@ def show_frame():
                    draw_letters(i, keys_set_1[i], False, keys_set_1, 2)   
                
     
-    elif frame_selector == 3: # Frequent Words
-        if len(predicted_words) == 0:
-            frame_selector = 0
-        else:
-            blank_Apps()
-            blank_Keyboard()
-            blank_Options()
-                
-            for i in range(10):
-                if i == word_count:
-                    light = True
-                else:
-                    light = False
-                draw_words(i, light, False)
+    elif frame_selector == 3: # Frequent Words 
+        blank_Apps()
+        blank_Keyboard()
+        blank_Options()
             
-            app_frames = (app_frames + 1) % (simulation_time + 1)
-            if app_frames == simulation_time:
-                word_count = (word_count + 1) % (len(predicted_words))
+        for i in range(10):
+            if i == word_count:
+                light = True
+            else:
+                light = False
+            draw_words(i, light, False)
         
+        app_frames = (app_frames + 1) % (simulation_time + 1)
+        if app_frames == simulation_time:
+            word_count = (word_count + 1) % (len(predicted_words))
+
+    elif frame_selector == 4: # Frequent Words 
+        blank_Apps()
+        blank_Keyboard()
+        blank_Options()
+            
+        for i in range(len(extra_options.keys())):
+            if i == selected_extra_option:
+                light = True
+            else:
+                light = False
+            draw_words(i, light, False)
+        
+        app_frames = (app_frames + 1) % (simulation_time + 1)
+        if app_frames == simulation_time:
+            selected_extra_option = (selected_extra_option + 1) % (len(extra_options.keys()))
+    
     else:
         blank_Apps()
         blank_Keyboard()
@@ -893,6 +892,12 @@ def show_frame():
     Options_tk = ImageTk.PhotoImage(image = Option_Board)
     option_label.Options_tk = Options_tk
     option_label.configure(image = Options_tk)    
+
+    # Extra Options
+    Extra_Option_Board = Image.fromarray(Extra_Option_Frame, 'RGB')
+    Extra_Options_tk = ImageTk.PhotoImage(image = Extra_Option_Board)
+    extra_option_label.Extra_Options_tk = Extra_Options_tk
+    extra_option_label.configure(image = Extra_Options_tk)
     
     # App Selection
     apps = Image.fromarray(general, 'RGB')
@@ -913,11 +918,6 @@ def show_frame():
     words_label.Pred_Words_tk = Pred_Words_tk
     words_label.configure(image = Pred_Words_tk)
     
-    Freq_Options = Image.fromarray(Frequent_Options, 'RGB')
-    Freq_Options_tk = ImageTk.PhotoImage(image = Freq_Options)
-    freq_option_label.Freq_Options_tk = Freq_Options_tk
-    freq_option_label.configure(image = Freq_Options_tk)
-    
     if frame_selector == 0:
         option_label.after(10, show_frame)
     elif frame_selector == 1:
@@ -925,9 +925,7 @@ def show_frame():
     elif frame_selector == 2:
         keyboard_label.after(10, show_frame)
     elif frame_selector == 3:
-        words_label.after(10, show_frame) 
-    elif frame_selector == 4:
-        freq_option_label.after(10, show_frame())
+        words_label.after(10, show_frame)    
 
  
     # User
