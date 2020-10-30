@@ -476,7 +476,7 @@ def OpenApp():
             time.sleep(2)
             pag.hotkey('win', 'left')
             time.sleep(1)
-            pag.click(x = (screen_width//2 - 40), y = (screen_height - 50))
+            pag.click(x = (screen_width//2 - 50), y = (screen_height - 100))
     
     else:
         pag.keyDown('altleft')
@@ -663,6 +663,8 @@ def show_frame():
         app_frames = (app_frames + 1) % (simulation_time+1)
         if app_frames == simulation_time:
             icon_index = (icon_index + 1) % (icon_count)
+        if icon_index == icon_count-1:
+            frame_selector = 0
             
     elif frame_selector == 2: # Keyboard Frame is selected
         blank_Apps()
@@ -928,10 +930,11 @@ def show_frame():
                         select_keyboard_menu = True
                         line_selected = 0
                         letter_index = 0
+                        frame_selector = 0
                         
                         if word_check1(active_letter):
                             current_valid_word += active_letter
-                            frame_selector = 0
+                            
                             new_word_added = True
                             Predict_Words()
                         else:
