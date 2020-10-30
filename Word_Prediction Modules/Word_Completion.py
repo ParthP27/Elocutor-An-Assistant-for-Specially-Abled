@@ -6,6 +6,7 @@ Created on Sat Sep  5 22:45:55 2020
 """
 
 # import Trie_Structure as trie
+import pyautogui as pag
 
 # t = trie.get_root()
 
@@ -20,13 +21,13 @@ Created on Sat Sep  5 22:45:55 2020
 #     elif comp == 0: 
 #     	print("No string found with this prefix\n")
 
-from nltk.corpus import wordnet as wn
+# from nltk.corpus import wordnet as wn
 
-print(wn.synsets('dog'))
+# print(wn.synsets('dog'))
 
-import autocomplete
+# import autocomplete
 
-autocomplete.load()
+# autocomplete.load()
 # x = 'y'
 
 # a = autocomplete.predict_currword(x, 10)
@@ -38,5 +39,7 @@ autocomplete.load()
 # print(len(s))
 # print(s.isspace())
 
-s = ('K', 'E', 'M', 'O')
-print(s[:2])
+s = [2,0,1]
+print(s.index(2))
+s = ('altleft', 'tab')
+pag.hotkey(s[0], s[1])

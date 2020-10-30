@@ -45,7 +45,7 @@ frame_selector = 0
     1 : App Selection Frame
     2 : Keyboard Frame
     3 : Frequent Words
-    4 : Extra Frame
+    4 : Frequent Options
 '''
 
 full_width = screen_width // 2
@@ -83,6 +83,35 @@ app = -1
 app_opened = False
 opened_apps = []
 
+# Frequent Options for easier use
+freq_count = 0
+freq_options = {
+                0 : {
+                        0:('Save', ('ctrlleft', 's')), 1:('Select All', ('ctrlleft', 'a')), 2:('Up ^', 'up'), 3:('Down', 'down'),
+                        4:('Left <-', 'left'), 5:('Right ->', 'right'), 6:('Undo', ('ctrlleft', 'z')), 7:('Exit', 'exit')
+                    }, 
+                1 : {
+                        0:('New Tab', ('ctrlleft', 't')), 1:('Enter', 'enter'), 2:('Tab', 'tab'), 3:('Up ^', 'up'), 
+                        4:('Left <-', 'left'), 5:('Right ->', 'right'), 6:('Down', 'down'), 7:('Exit', 'exit')
+                    },
+                2 : {
+                        0:('Tab', 'tab'), 1:('Enter', 'enter'), 2:('Up ^', 'up'), 3:('Down', 'down'),
+                        4:('Left <-', 'left'), 5:('Right ->', 'right'), 6:('Backspace', 'backspace'), 7:('Exit', 'exit')
+                    },
+                3 : {
+                        0:('+', '+'), 1:('-', '-'), 2:('*', '*'), 3:('/', '/'),
+                        4:('.', '.'), 5:('=', 'enter'), 6:('Tab', 'tab'), 7:('Exit', 'exit')
+                    }
+               }
+'''
+    Apps Number is given to switch between
+        0 : Notepad
+        1 : Chrome
+        2 : This PC
+        3 : Calculator
+
+'''
+
 #Setting Keyboard size
 resolutions = [[1920,1080],[1440,900],[1366,768]]
 index_res = 0
@@ -119,7 +148,7 @@ last_selected_line = 0
 title_frame = tk.Frame(root, bg='dark blue', width = full_width, height = title_height)
 apps_frame = tk.Frame(root, bg='yellow', width = app_width, height = app_height)
 user_frame = tk.Frame(root, bg='orange', width = user_width, height = user_height)
-freq_title_frame = tk.Frame(root, bg = '#1a2d4f', width = user_width, height = (user_height//5))
+freq_title_frame = tk.Frame(root, bg = '#333333', width = user_width, height = (user_height//5))
 freq_option_frame = tk.Frame(root, bg='black', width = user_width, height = user_height)
 selection_frame = tk.Frame(root, bg='green', width = frame_selection_width, height = (user_height*4//5))
 words_frame = tk.Frame(root, bg='red', width = words_frame_width, height = user_height)
@@ -143,6 +172,8 @@ predicted_words = []
 new_word_added = False
 word_count = 0
 valid_keys = ['caps', 'shift', 'ctrl']
+
+
 
 
 
@@ -172,7 +203,7 @@ freq_option_label = tk.Label(freq_option_frame)
 freq_option_label.pack()
 
 
-freq_title_label = tk.Label(freq_title_frame, text = "Frequent Options", background = "#1a2d4f",foreground = "white", font=("Helvetica", 12))
+freq_title_label = tk.Label(freq_title_frame, text = "Frequent Options", background = "#333333",foreground = "white", font=("Helvetica", 12))
 freq_title_label.place(x = (user_width//4), y = 10)
 
 
@@ -220,9 +251,14 @@ def blank_words():
     for i in range(10):
         draw_words(i, False, True)
         
-def blank_freq_options():
-    for i in range(8):
-        draw_freq_options(i, False, True)
+def put_freq_options():
+    if len(opened_apps) != 0:
+        for i in range(8):
+            draw_freq_options(i, False, False)
+    
+    else:
+        for i in range(8):
+            draw_freq_options(i, False, True)
     
 
 def put_words():
@@ -304,12 +340,9 @@ def draw_freq_options(freq_index, freq_select, blank):
         
     else:
         # Text settings
-        if freq_index < len(predicted_words):
-            text = predicted_words[freq_index][0]
-        else:
-            text = ""
+        text = freq_options[opened_apps[0]][freq_index][0]
         font_letter = cv2.FONT_HERSHEY_COMPLEX
-        font_scale = 0.6
+        font_scale = 0.4
         font_th = 1
         text_size = cv2.getTextSize(text, font_letter, font_scale, font_th)[0]
         width_text, height_text = text_size[0], text_size[1]
@@ -410,35 +443,51 @@ def draw_icon(image_index, image_select):
 def OpenApp():
     global app
     global app_opened
-    if app == 0:
-        pag.press('win',interval=0.25)
-        time.sleep(0.1)
-        pag.press('n')
-        pag.typewrite('otepad')
-    elif app == 1:
-        pag.press('win',interval=0.25)
-        time.sleep(0.1)
-        pag.press('c')
-        pag.typewrite('hrome')      
-    elif app == 2:
-        pag.press('win',interval=0.25)
-        time.sleep(0.1)
-        pag.press('t')
-        pag.typewrite('his PC')
-    elif app == 3:
-        pag.press('win',interval=0.25)
-        time.sleep(0.1)
-        pag.press('c')
-        pag.typewrite('alculator')
-    elif app == 5:
-        root.destroy()
+    global opened_apps
+    # print(opened_apps)
+    if app not in opened_apps:
+        opened_apps.insert(0, app)
+        if app == 0:
+            pag.press('win',interval=0.25)
+            time.sleep(0.1)
+            pag.press('n')
+            pag.typewrite('otepad')
+        elif app == 1:
+            pag.press('win',interval=0.25)
+            time.sleep(0.1)
+            pag.press('c')
+            pag.typewrite('hrome')      
+        elif app == 2:
+            pag.press('win',interval=0.25)
+            time.sleep(0.1)
+            pag.press('t')
+            pag.typewrite('his PC')
+        elif app == 3:
+            pag.press('win',interval=0.25)
+            time.sleep(0.1)
+            pag.press('c')
+            pag.typewrite('alculator')
+        elif app == 5:
+            root.destroy()
+        
+        if app != 5:
+            time.sleep(1)
+            pag.press('enter')
+            time.sleep(2)
+            pag.hotkey('win', 'left')
+            time.sleep(1)
+            pag.click(x = (screen_width//2 - 40), y = (screen_height - 50))
     
-    if app != 5:
-        time.sleep(1)
-        pag.press('enter')
-        time.sleep(2)
-        pag.hotkey('win', 'left')
+    else:
+        pag.keyDown('altleft')
+        for i in range(opened_apps.index(app)):
+            pag.press('tab')
+        pag.keyUp('altleft')
+        opened_apps.remove(app)
+        opened_apps.insert(0, app)
+        
     app_opened = True
+    # print(opened_apps)
     
 # ------------------------------- END : Application Selection ----------------------------------------
     
@@ -555,6 +604,9 @@ def show_frame():
     global new_word_added
     global word_count
     global Frequent_Options
+    global freq_count
+    global opened_apps
+    global freq_options
     
     
     _, frame = cap.read()    
@@ -572,7 +624,7 @@ def show_frame():
     if frame_selector == 0:
         blank_Apps()
         blank_Keyboard()
-        blank_freq_options()
+        put_freq_options()
         if current_valid_word != "":
             put_words()
         else:
@@ -592,7 +644,7 @@ def show_frame():
     elif frame_selector == 1: # APP Selection Frame is selected.
         blank_Keyboard()
         blank_Options()
-        blank_freq_options()
+        put_freq_options()
         if current_valid_word != "":
             put_words()
         else:
@@ -615,6 +667,7 @@ def show_frame():
     elif frame_selector == 2: # Keyboard Frame is selected
         blank_Apps()
         blank_Options()
+        put_freq_options()
         if current_valid_word != "":
             put_words()
         else:
@@ -766,10 +819,28 @@ def show_frame():
             if app_frames == simulation_time:
                 word_count = (word_count + 1) % (len(predicted_words))
         
+    elif frame_selector == 4: # Frequent Options
+        if len(opened_apps) == 0:
+            frame_selector = 0
+        else:           
+            
+            for i in range(8):
+                if i == freq_count:
+                    tmp_light = True
+                else:
+                    tmp_light = False
+                draw_freq_options(i, tmp_light, False)
+                
+            app_frames = (app_frames + 1) % (simulation_time + 1)
+            if app_frames == simulation_time:
+                freq_count = (freq_count + 1) % (8)
+            
+                
     else:
         blank_Apps()
         blank_Keyboard()
         blank_Options()
+        put_freq_options()
         if current_valid_word != "":
             put_words()
         else:
@@ -818,6 +889,7 @@ def show_frame():
                         frame_selector = 1
                         app = -1
                         app_opened = False
+                        current_valid_word = ""
                         
                     elif selected_option == 1:
                         frame_selector = 2
@@ -825,10 +897,13 @@ def show_frame():
                     elif selected_option == 2:
                         frame_selector = 3
                     
+                    elif selected_option == 3:
+                        frame_selector = 4
+                    
                 # App Selection Stuff
                 elif frame_selector == 1 and app == -1 and not app_opened: # Opens App if not already opened
                     app = icon_index
-                    frame_selector = 2
+                    frame_selector = 0
                 
                 # Keyboard Simulation Stuff
                 elif frame_selector == 2:
@@ -876,7 +951,17 @@ def show_frame():
                     pag.typewrite(tmp_word[len(current_valid_word):])
                     pag.press('space')
                     current_valid_word = ""
-                    frame_selector = 2
+                    frame_selector = 0
+                
+                elif frame_selector == 4:
+                    temp = freq_options[opened_apps[0]][freq_count][1]
+                    if temp == 'exit':
+                        frame_selector = 0
+                    else:
+                        if type(temp) is tuple:
+                            pag.hotkey(temp[0], temp[1])
+                        else:
+                            pag.press(temp)
 
 
     
@@ -924,10 +1009,8 @@ def show_frame():
         app_label.after(10, show_frame)
     elif frame_selector == 2:
         keyboard_label.after(10, show_frame)
-    elif frame_selector == 3:
-        words_label.after(10, show_frame) 
-    elif frame_selector == 4:
-        freq_option_label.after(10, show_frame())
+    else:
+        words_label.after(10, show_frame)
 
  
     # User
