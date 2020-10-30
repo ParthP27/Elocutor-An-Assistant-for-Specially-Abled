@@ -23,7 +23,7 @@ autoc.load()
 #------------------------------------- Main Window ------------------------------------------------
 root = tk.Tk()
 root.title("Elocutor")
-root.iconbitmap(r"E:\Project\Elocutor\GUI Components Testing\images\icons8-siri-256.ico")
+#root.iconbitmap(r"E:\Project\Elocutor\GUI Components Testing\images\icons8-siri-256.ico")
 root.config(bg='gray')
 root.resizable(width=False, height=False)
 
@@ -297,9 +297,9 @@ def Predict_Next_Word():
 Option_Frame = np.zeros((len(options.keys())*int(user_height), int(frame_selection_width), 3), np.uint8)
 def draw_options(option_index, option_select):
     width = int(frame_selection_width) - 20
-    height = int(user_height) // 3 - 30
+    height = int(user_height) // 4 - 30
     x = 10
-    y = Keyboard_gap + (option_index * (height + (10)))
+    y = Keyboard_gap + (option_index * (height+2))
     
     th = 3 # thickness
 
@@ -326,8 +326,12 @@ def draw_options(option_index, option_select):
 #----------------------------- Frequently used options Frame--------------------------------------------
 Frequent_Options = np.zeros((int(user_height // 5) * 4, int(user_width // 2)*2, 3), np.uint8)
 def draw_freq_options(freq_index, freq_select, blank):
+    global opened_apps
+    global freq_options
+    
     width = int(user_width // 2)
     height = int(user_height // 5)
+    
     if freq_index % 2 == 0:
         x = 0
     else:
@@ -663,8 +667,8 @@ def show_frame():
         app_frames = (app_frames + 1) % (simulation_time+1)
         if app_frames == simulation_time:
             icon_index = (icon_index + 1) % (icon_count)
-        if icon_index == icon_count-1:
-            frame_selector = 0
+            if icon_index == (0):
+                frame_selector = 0
             
     elif frame_selector == 2: # Keyboard Frame is selected
         blank_Apps()
