@@ -18,7 +18,17 @@ import pyautogui as pag
 import autocomplete as autoc
 # import next_word_prediction
 autoc.load()
+import pyttsx3 #pip install pyttsx3
 
+#-------------------------AUDIO CONTROL CENTER-------------
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
+# print(voices[1].id)
+engine.setProperty('voice', voices[0].id)
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
 
 #------------------------------------- Main Window ------------------------------------------------
 root = tk.Tk()
@@ -87,8 +97,8 @@ opened_apps = []
 freq_count = 0
 freq_options = {
                 0 : {
-                        0:('Save', ('ctrlleft', 's')), 1:('Select All', ('ctrlleft', 'a')), 2:('Up ^', 'up'), 3:('Down', 'down'),
-                        4:('Left <-', 'left'), 5:('Right ->', 'right'), 6:('Undo', ('ctrlleft', 'z')), 7:('Exit', 'exit')
+                        0:('Save', ('ctrlleft', 's')), 1:('Enter', 'enter'), 2:('Up ^', 'up'), 3:('Down', 'down'),
+                        4:('Left <-', 'left'), 5:('Right ->', 'right'), 6:('Speak', "call"), 7:('Exit', 'exit')
                     }, 
                 1 : {
                         0:('New Tab', ('ctrlleft', 't')), 1:('Enter', 'enter'), 2:('Tab', 'tab'), 3:('Up ^', 'up'), 
@@ -253,7 +263,7 @@ def blank_words():
         
 def put_freq_options():
     if len(opened_apps) != 0:
-        for i in range(8):
+        for i in range(len(freq_options[opened_apps[0]].items())):
             draw_freq_options(i, False, False)
     
     else:
@@ -297,7 +307,7 @@ def Predict_Next_Word():
 Option_Frame = np.zeros((len(options.keys())*int(user_height), int(frame_selection_width), 3), np.uint8)
 def draw_options(option_index, option_select):
     width = int(frame_selection_width) - 20
-    height = int(user_height) // 4 - 30
+    height = int(user_height) // 4 - 15
     x = 10
     y = Keyboard_gap + (option_index * (height+2))
     
@@ -612,7 +622,6 @@ def show_frame():
     global opened_apps
     global freq_options
     
-    
     _, frame = cap.read()    
     frame = rescale_frame(frame, percent=50)
     rows, cols, _ = frame.shape
@@ -830,7 +839,7 @@ def show_frame():
             frame_selector = 0
         else:           
             
-            for i in range(8):
+            for i in range(len(freq_options[opened_apps[0]].items())):
                 if i == freq_count:
                     tmp_light = True
                 else:
@@ -839,7 +848,7 @@ def show_frame():
                 
             app_frames = (app_frames + 1) % (simulation_time + 1)
             if app_frames == simulation_time:
-                freq_count = (freq_count + 1) % (8)
+                freq_count = (freq_count + 1) % (len(freq_options[opened_apps[0]].items()))
             
                 
     else:
@@ -946,8 +955,8 @@ def show_frame():
                         
                         if word_check2(active_letter):
                             text += active_letter
-                        else:
-                            text = ""
+##                        else:
+##                            text = ""
                         
                         if not word_check1(active_letter) and word_check2(active_letter):
                             current_valid_word = ""
@@ -957,6 +966,8 @@ def show_frame():
                     tmp_word = predicted_words[word_count][0]
                     pag.typewrite(tmp_word[len(current_valid_word):])
                     pag.press('space')
+                    text=text[:len(text)-len(current_valid_word)]
+                    text+=tmp_word+" "
                     current_valid_word = ""
                     frame_selector = 0
                 
@@ -968,7 +979,10 @@ def show_frame():
                         if type(temp) is tuple:
                             pag.hotkey(temp[0], temp[1])
                         else:
-                            pag.press(temp)
+                            if(temp=="call"):
+                                speak(text)
+                            else:
+                                pag.press(temp)
 
 
     
