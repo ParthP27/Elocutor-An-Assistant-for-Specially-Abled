@@ -256,8 +256,8 @@ Author_title_label.place(x = (user_width//2), y = 35)
 
 # Landmarks Detector
 detector = dlib.get_frontal_face_detector()
-#predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("../Face_Landmarks/shape_predictor_68_face_landmarks.dat")
+#predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
 # User Video
 cap = cv2.VideoCapture(0)
