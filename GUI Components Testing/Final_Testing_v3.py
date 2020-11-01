@@ -88,7 +88,7 @@ Overall_Color = (13, 12, 13)#(32, 32, 32)#(47, 52, 55)#(26, 26, 26)
 Overall_Color_Hash =  "#0d0c0d" #"#202020"   #"#1a1a1a"
 Text_Color_Hash = "#eaeaea"
 Text_Color = (234, 234, 234)
-
+Border_Color_Hash = "#757575"
 # Variables used in function to Open App
 icon_index = 0
 selected = 0
@@ -213,11 +213,11 @@ valid_keys = ['caps', 'shift', 'ctrl']
 #logo = tk.PhotoImage(file = "logos_pollos.png")
 #logo = logoz.resize((250, 250), Image. ANTIALIAS)
 #photoimage= logo.subsample(2, 2)
-logo= cv2.imread("logos_pollos.png")
+logo= cv2.imread("Icons/logos_pollos.png")
 logo =   cv2.resize(logo, (0, 0), fx = 0.35, fy = 0.35)  
 
 title_label = tk.Label(title_frame,background = Overall_Color_Hash)#, text = "Elocuter", background = "white", foreground = "black", font=("Helvetica", 25), width = full_width // 18)
-title_label.place(x=full_width//2.5,y=-1)
+title_label.place(x=full_width//2.5,y=-5)
 
 logo = Image.fromarray(logo, 'RGB')
 title_image_tk = ImageTk.PhotoImage(image=logo)
@@ -225,22 +225,22 @@ title_label.title_image_tk = title_image_tk
 title_label.configure(image=title_image_tk)
 
 
-app_label = tk.Label(apps_frame,background = "#757575")
+app_label = tk.Label(apps_frame,background = Border_Color_Hash)
 app_label.pack()
 
-user_label = tk.Label(user_frame,background = "#757575")
+user_label = tk.Label(user_frame,background = Border_Color_Hash)
 user_label.pack()
 
-keyboard_label = tk.Label(keyboard_frame,background = "#757575")
+keyboard_label = tk.Label(keyboard_frame,background = Border_Color_Hash)
 keyboard_label.pack()
 
-option_label = tk.Label(selection_frame,background = "#757575")
+option_label = tk.Label(selection_frame,background = Border_Color_Hash)
 option_label.pack()
 
-words_label = tk.Label(words_frame,background = "#757575")
+words_label = tk.Label(words_frame,background = Border_Color_Hash)
 words_label.pack()
 
-freq_option_label = tk.Label(freq_option_frame,background = "#757575")
+freq_option_label = tk.Label(freq_option_frame,background = Border_Color_Hash)
 freq_option_label.pack()
 
 
