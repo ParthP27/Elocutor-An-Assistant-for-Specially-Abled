@@ -28,7 +28,7 @@ def speak(audio):
 #------------------------------------- Main Window ------------------------------------------------
 root = tk.Tk()
 root.title("Elocutor")
-root.iconbitmap(r"wheelchair_person.ico")
+root.iconbitmap(r"Icons/wheelchair_person.ico")
 root.config(bg='gray')
 root.resizable(width=False, height=False)
 
